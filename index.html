@@ -193,10 +193,10 @@
       const constDec = mask.toString(10);                     // 10進
       const constBin = mask.toString(2).padStart(width, '0'); // 2進（幅合わせ）
 
-      // 可読性のため (x+offset) に括弧を付ける
+      // luaReadableは可読性のために括弧を付ける
       const xTerm = offset === 0 ? 'x' : `x+${offset}`;
       const luaReadable = `(${constDec} >> (${xTerm})) & 1 == 1`;
-      const luaCompact  = `${constDec} >> ${xTerm} & 1`;
+      const luaCompact  = `${constDec} >> ${xTerm} & 1 == 1`;
 
       return { constDec, constBin, offset, luaReadable, luaCompact, min, max, outOfRange };
     }
