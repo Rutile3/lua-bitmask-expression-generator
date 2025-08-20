@@ -26,7 +26,7 @@
                 <div class="mb-3">
                     <label for="set" class="form-label">整数の集合（カンマ/空白/改行区切り）</label>
                     <textarea id="set" rows="1" class="form-control" placeholder="例: -4, -2, 1, 3, 5"></textarea>
-                    <div class="form-text small">※重複は自動除去・昇順ソート。非整数は無視します。</div>
+                    <small class="form-text">※重複は自動除去・昇順ソート。非整数は無視します。</small>
                 </div>
                 <div class="form-check mb-3">
                     <input class="form-check-input" type="checkbox" id="useRange">
@@ -54,31 +54,46 @@
         <div class="card">
             <div class="card-body">
                 <h2 class="h6 mb-3">出力</h2>
+
                 <div class="out-grid">
                     <div class="out-row">
-                        <div class="text-body">整数ビットマスク</div>
-                        <div id="constDec" class="form-control disabled">—</div>
-                        <button class="copy btn btn-outline-secondary btn-sm" data-copy="constDec">コピー</button>
+                        <div class="out-key form-label">整数ビットマスク</div>
+                        <div class="input-group">
+                            <input id="constDec" class="form-control font-monospace" value="-" readonly>
+                            <button class="copy btn btn-outline-secondary" type="button"
+                                data-copy="constDec">コピー</button>
+                        </div>
                     </div>
                     <div class="out-row">
-                        <div class="text-body">バイナリビットマスク</div>
-                        <div id="constBin" class="form-control disabled">—</div>
-                        <button class="copy btn btn-outline-secondary btn-sm" data-copy="constBin">コピー</button>
+                        <div class="out-key form-label">バイナリビットマスク</div>
+                        <div class="input-group">
+                            <input id="constBin" class="form-control font-monospace" value="-" readonly>
+                            <button class="copy btn btn-outline-secondary" type="button"
+                                data-copy="constBin">コピー</button>
+                        </div>
                     </div>
                     <div class="out-row">
-                        <div class="text-body">オフセット</div>
-                        <div id="offset" class="form-control disabled">—</div>
-                        <button class="copy btn btn-outline-secondary btn-sm" data-copy="offset">コピー</button>
+                        <div class="out-key form-label">オフセット</div>
+                        <div class="input-group">
+                            <input id="offset" class="form-control font-monospace" value="-" readonly>
+                            <button class="copy btn btn-outline-secondary" type="button" data-copy="offset">コピー</button>
+                        </div>
                     </div>
                     <div class="out-row">
-                        <div class="text-body">Lua 判定式（可読性重視）</div>
-                        <div id="luaReadable" class="form-control disabled">—</div>
-                        <button class="copy btn btn-outline-secondary btn-sm" data-copy="luaReadable">コピー</button>
+                        <div class="out-key form-label">Lua 判定式（可読性重視）</div>
+                        <div class="input-group">
+                            <input id="luaReadable" class="form-control font-monospace" value="-" readonly>
+                            <button class="copy btn btn-outline-secondary" type="button"
+                                data-copy="luaReadable">コピー</button>
+                        </div>
                     </div>
                     <div class="out-row">
-                        <div class="text-body">Lua 判定式（サイズ重視）</div>
-                        <div id="luaCompact" class="form-control disabled">—</div>
-                        <button class="copy btn btn-outline-secondary btn-sm" data-copy="luaCompact">コピー</button>
+                        <div class="out-key form-label">Lua 判定式（サイズ重視）</div>
+                        <div class="input-group">
+                            <input id="luaCompact" class="form-control font-monospace" value="-" readonly>
+                            <button class="copy btn btn-outline-secondary" type="button"
+                                data-copy="luaCompact">コピー</button>
+                        </div>
                     </div>
                 </div>
             </div>

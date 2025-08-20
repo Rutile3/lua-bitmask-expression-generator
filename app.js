@@ -28,6 +28,11 @@
     };
 
     // ===== 変換・計算ロジック =====
+    function autosize(el) {
+        if (!(el instanceof HTMLTextAreaElement)) return;
+        el.style.height = 'auto';
+        el.style.height = `${el.scrollHeight}px`;
+    }
 
     /** 入力文字列を整数集合（昇順、重複除去）に変換 */
     function parseSet(input) {
@@ -80,10 +85,17 @@
     // ===== 描画関連 =====
 
     function setText(id, text) {
-        const v = text ?? OUTPUT_EMPTY;
+        const v = (text ?? OUTPUT_EMPTY);
         const el = document.getElementById(id);
-        el.textContent = v;
-        // 対応するコピー ボタンの活性/非活性を切り替え
+        if (!el) return;
+
+        if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) {
+            el.value = v;
+            autosize(el); // ←自動リサイズ
+        } else {
+            el.textContent = v;
+        }
+
         const btn = document.querySelector(`.copy[data-copy="${id}"]`);
         if (btn) btn.disabled = (v === OUTPUT_EMPTY);
     }
@@ -105,9 +117,14 @@
     }
 
     async function copyFrom(id) {
-        const t = document.getElementById(id).textContent;
+        const el = document.getElementById(id);
+        if (!el) return;
+        const t = (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement)
+            ? el.value
+            : el.textContent;
+
         if (!t || t === OUTPUT_EMPTY) return;
-        try { await navigator.clipboard.writeText(t); } catch { /* noop */ }
+        try { await navigator.clipboard.writeText(t); } catch { }
     }
 
     // ===== イベント類 =====
