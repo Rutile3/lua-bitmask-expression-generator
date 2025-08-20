@@ -5,7 +5,7 @@
     const OUTPUT_EMPTY = '—';
 
     // ------- DOMヘルパ
-    const $ = (sel) => document.querySelector(sel);
+    const $  = (sel) => document.querySelector(sel);
     const $$ = (sel) => document.querySelectorAll(sel);
 
     // ------- DOMキャッシュ
