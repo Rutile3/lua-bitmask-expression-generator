@@ -1,86 +1,17 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="color-scheme" content="light">
   <link rel="icon" href="./favicon.ico" type="image/x-icon">
-
   <title>Lua ビットマスク判定式ジェネレータ</title>
-  <style>
-    /* ===== 基本スタイル（白基調・縦一列レイアウト） ===== */
-    :root {
-      --fg: #1f2937;       /* 文字色 */
-      --fg-sub: #6c757d;   /* 補助文字 */
-      --bg: #ffffff;       /* 背景 */
-      --line: #6c757d;     /* 罫線 */
-      --section-border: 2px; /* セクションのボーダーサイズ */
-      --item-border: 1px;    /* 項目のボーダーサイズ */
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; /* 等幅フォント */
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0; padding: 24px; color: var(--fg); background: var(--bg);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-    }
-    .wrap { max-width: 760px; margin: 0 auto; }
-    h1 { font-size: 32px; margin: 0 0 8px; }
-    p.lead { margin: 0 0 16px; color: var(--fg-sub); }
 
-    /* ボタンスタイル */
-    .btn-primary {
-      --btn-color: #fff;
-      --btn-bg: #0d6efd;
-      --btn-border-color: #0d6efd;
-      --btn-hover-color: #fff;
-      --btn-hover-bg: #0b5ed7;
-      --btn-hover-border-color: #0a58ca;
-    }
-    .btn-secondary {
-      --btn-color: #6c757d;
-      --btn-bg: #fff;
-      --btn-border-color: #6c757d;
-      --btn-hover-color: #fff;
-      --btn-hover-bg: #6c757d;
-      --btn-hover-border-color: #6c757d;
-    }
-    button {
-      color: var(--btn-color); background: var(--btn-bg); border: var(--item-border) solid var(--btn-border-color);
-      appearance: none; cursor: pointer; border-radius: 8px; padding: 10px 14px;
-      font-weight: 600; transition: background .15s;
-    }
-    button:hover {
-      color: var(--btn-hover-color); background: var(--btn-hover-bg); border-color: var(--btn-hover-border-color);
-    }
-    button[disabled] { opacity: .4; pointer-events: none; cursor: not-allowed; }
-
-    /* 縦並びのカード */
-    .section { border: var(--section-border) solid var(--line); border-radius: 12px; padding: 16px; background: #fff; }
-    .section + .section { margin-top: 16px; }
-    .section h2 { font-size: 16px; margin: 0 0 12px; color: var(--fg); }
-
-    /* 入力UI */
-    label { display: block; font-size: 13px; color: var(--fg-sub); margin-bottom: 6px; }
-    textarea, input[type="number"], input[type="text"] {
-      width: 100%; padding: 10px 12px; border: var(--item-border) solid var(--line); border-radius: 8px; font-size: 14px;
-      background: #fff; color: var(--fg); font-family: var(--mono);
-    }
-    .row { display: grid; grid-template-columns: 1fr; gap: 12px; }
-    .inline { display: flex; align-items: center; gap: 10px; }
-    .hint { font-size: 12px; color: var(--fg-sub); margin-top: 6px; }
-    .actions { display: flex; gap: 10px; margin-top: 12px; }
-
-    /* 出力UI */
-    .out-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
-    .out-row { display: grid; grid-template-columns: 18ch 1fr auto; gap: 8px; align-items: center; }
-    .out-key { color: var(--fg-sub); font-size: 13px; }
-    .out-val { border: var(--item-border) solid var(--line); border-radius: 8px; padding: 8px 10px; font-family: var(--mono); background: #fff; word-break: break-all; }
-    .copy { justify-self: end; margin-left: 8px; }
-
-    /* 目立たない警告 */
-    .warn { color: #b91c1c; font-size: 12px; margin-top: 6px; }
-  </style>
+  <!-- 外部CSS -->
+  <link rel="stylesheet" href="./styles.css">
 </head>
+
 <body>
   <div class="wrap">
     <h1>Lua ビットマスク判定式ジェネレータ</h1>
@@ -114,7 +45,7 @@
           </div>
         </div>
         <div class="actions">
-          <button id="gen"   class="btn-primary"   type="button">生成</button>
+          <button id="gen" class="btn-primary" type="button">生成</button>
           <button id="clear" class="btn-secondary" type="button">クリア</button>
         </div>
         <div id="msg" class="warn" style="display:none;" aria-live="polite" role="status"></div>
@@ -154,150 +85,8 @@
     </section>
   </div>
 
-  <script>
-    const OUTPUT_EMPTY = '—';
-
-    /** 入力文字列を整数集合（昇順、重複除去）に変換 */
-    function parseSet(input) {
-      if (!input) return [];
-      const nums = String(input)
-        .split(/[^-0-9]+/g)       // 数字とマイナス以外で分割
-        .filter(Boolean)          // 空要素を除去
-        .map(Number)              // 数値化
-        .filter(Number.isInteger);// 整数のみ
-      return Array.from(new Set(nums)).sort((a,b)=>a-b);
-    }
-
-    /** 集合からビットマスク等を構築（範囲min/maxは任意。未指定なら集合のmin/max） */
-    function buildFromSet(xSet, opts={}) {
-      if (!Array.isArray(xSet) || xSet.length === 0) throw new Error('整数の集合が空です。');
-
-      const sorted = [...xSet].sort((a,b)=>a-b);
-      const autoMin = sorted[0];
-      const autoMax = sorted[sorted.length - 1];
-
-      const min = Number.isFinite(opts.minX) ? Number(opts.minX) : autoMin;
-      const max = Number.isFinite(opts.maxX) ? Number(opts.maxX) : autoMax;
-      if (min > max) throw new Error('minX は maxX 以下である必要があります。');
-
-      // 範囲外は無視（メッセージ用に記録）
-      const outOfRange = sorted.filter(v => v < min || v > max);
-
-      // BigIntでマスク化：bitIndex = v - min
-      let mask = 0n;
-      for (const v of sorted) {
-        if (v < min || v > max) continue;
-        mask |= (1n << BigInt(v - min));
-      }
-
-      const width = max - min + 1;
-      const offset = -min; // x + offset で 0..width-1
-      const constDec = mask.toString(10);                     // 10進
-      const constBin = mask.toString(2).padStart(width, '0'); // 2進（幅合わせ）
-
-      // luaReadableは可読性のために括弧を付ける
-      const xTerm = offset === 0 ? 'x' : `x+${offset}`;
-      const luaReadable = `(${constDec} >> (${xTerm})) & 1 == 1`;
-      const luaCompact  = `${constDec} >> ${xTerm} & 1 == 1`;
-
-      return { constDec, constBin, offset, luaReadable, luaCompact, min, max, outOfRange };
-    }
-
-    /** 画面への描画 */
-    function renderOutput(r) {
-      setText('constDec', r.constDec);
-      setText('constBin', r.constBin);
-      setText('offset',   String(r.offset));
-      setText('luaReadable',   r.luaReadable);
-      setText('luaCompact',  r.luaCompact);
-
-      const msg = document.getElementById('msg');
-      if (r.outOfRange && r.outOfRange.length) {
-        msg.style.display = 'block';
-        msg.textContent = `範囲外の値を無視: ${r.outOfRange.join(', ')}`;
-      } else {
-        msg.style.display = 'none';
-        msg.textContent = '';
-      }
-    }
-
-    /** 指定した要素のテキストに文字を代入します。 */
-    function setText(id, text) {
-      const v = text ?? OUTPUT_EMPTY;
-      document.getElementById(id).textContent = v;
-      // 対応するコピー ボタンの活性/非活性を切り替え
-      const btn = document.querySelector(`.copy[data-copy="${id}"]`);
-      if (btn) btn.disabled = (v === OUTPUT_EMPTY);
-    }
-
-    /** 指定した要素のテキストを、クリップボードにコピーします。 */
-    async function copyFrom(id) {
-      const t = document.getElementById(id).textContent;
-      if (!t || t === OUTPUT_EMPTY) return;
-      try { await navigator.clipboard.writeText(t); }
-      catch {}
-    }
-
-    // ================ イベント類 ================
-    const useRange = document.getElementById('useRange');
-    const rangeRow = document.getElementById('rangeRow');
-    const minXEl = document.getElementById('minX');
-    const maxXEl = document.getElementById('maxX');
-
-    // 「範囲を固定する」チェックの変更イベント
-    useRange.addEventListener('change', () => {
-      rangeRow.style.display = useRange.checked ? 'grid' : 'none';
-      if (useRange.checked) {
-        const xs = parseSet(document.getElementById('set').value);
-        if (xs.length) {
-          minXEl.value = xs[0];
-          maxXEl.value = xs[xs.length - 1];
-        }
-      } else {
-        minXEl.value = '';
-        maxXEl.value = '';
-      }
-    });
-
-    // 「生成」ボタンのクリックイベント
-    document.getElementById('gen').addEventListener('click', () => {
-      try {
-        const xs = parseSet(document.getElementById('set').value);
-        const opts = {};
-        if (useRange.checked) {
-          if (minXEl.value === '' || maxXEl.value === '') throw new Error('minX / maxX を指定してください。');
-          opts.minX = Number(minXEl.value);
-          opts.maxX = Number(maxXEl.value);
-        }
-        const r = buildFromSet(xs, opts);
-        renderOutput(r);
-      } catch (e) {
-        const msg = document.getElementById('msg');
-        msg.style.display = 'block';
-        msg.textContent = e.message;
-      }
-    });
-
-    // 「クリア」ボタンのクリックイベント
-    document.getElementById('clear').addEventListener('click', () => {
-      document.getElementById('set').value = '';
-      useRange.checked = false; rangeRow.style.display = 'none'; minXEl.value = maxXEl.value = '';
-
-      const msg = document.getElementById('msg');
-      msg.style.display = 'none';
-      msg.textContent = '';
-
-      ['constDec','constBin','offset','luaReadable','luaCompact'].forEach(id => setText(id, OUTPUT_EMPTY));
-    });
-
-    // 「コピー」ボタンのクリックイベント
-    document.querySelectorAll('.copy').forEach(
-      b => b.addEventListener('click', e => copyFrom(e.currentTarget.dataset.copy))
-    );
-
-    // デモ初期値
-    document.getElementById('set').value = '-4, -2, 1, 3, 5';
-    document.getElementById('gen').click();
-  </script>
+  <!-- 外部JS（deferで安全にDOM後） -->
+  <script src="./app.js" defer></script>
 </body>
+
 </html>
