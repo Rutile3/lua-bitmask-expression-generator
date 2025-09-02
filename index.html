@@ -14,17 +14,21 @@
 </head>
 
 <body class="bg-light">
-    <div class="container my-4">
+    <header class="container my-4">
         <h1 class="mb-2">Lua ビットマスク判定式ジェネレータ</h1>
-        <p class="lead text-muted mb-4 fs-6">
+        <p class="lead fs-6">
             整数の集合から、整数ビットマスク・バイナリビットマスク・オフセット・Lua 判定式を生成します。<br>
             必要に応じて、範囲（min..max）を固定して生成することもできます。
         </p>
+    </header>
 
+    <main class="container my-4">
         <!-- 入力セクション -->
-        <div class="card mb-3">
+        <section class="card mb-3" aria-labelledby="input-title">
+            <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
+                <span>入力</span>
+            </div>
             <div class="card-body">
-                <h2 class="h6 mb-3">入力</h2>
                 <div class="mb-3">
                     <label for="set" class="form-label">整数の集合（カンマ/空白/改行区切り）</label>
                     <textarea id="set" rows="1" class="form-control" placeholder="例: -4, -2, 1, 3, 5"></textarea>
@@ -50,13 +54,14 @@
                 </div>
                 <div id="msg" class="text-danger small" style="display:none;" aria-live="polite" role="status"></div>
             </div>
-        </div>
+        </section>
 
         <!-- 出力セクション -->
-        <div class="card mb-3">
+        <section class="card mb-3" aria-labelledby="output-title">
+            <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
+                <span>出力</span>
+            </div>
             <div class="card-body">
-                <h2 class="h6 mb-3">出力</h2>
-
                 <div class="out-grid">
                     <div class="out-row">
                         <div class="out-key form-label">整数ビットマスク</div>
@@ -95,8 +100,8 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </section>
+    </main>
 
     <!-- 外部JS -->
     <script src="./app.js" defer></script>
