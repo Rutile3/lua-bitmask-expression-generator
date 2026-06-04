@@ -44,9 +44,21 @@
                         <span class="fw-semibold">入力</span>
                     </div>
                     <div class="card-body">
-                        ・整数の集合（カンマ/空白/改行区切り）
-                        ・範囲指定
-                        ・ボタン
+                        <div class="mb-3">
+                            <label for="set" class="form-label fw-semibold">整数の集合（カンマ/空白/改行区切り）</label>
+                            <input id="set" name="set" type="text" class="form-control" placeholder="例: -4, -2, 1, 3, 5" required="">
+                        </div>
+                        <div class="mb-4">
+                        ・TODO:範囲指定
+                        </div> 
+                        <div class="d-grid gap-2 d-sm-flex">
+                            <button id="generate-button" type="button" class="btn btn-primary flex-sm-fill">
+                                生成
+                            </button>
+                            <button id="clear-button" type="button" class="btn btn-outline-secondary flex-sm-fill">
+                                クリア
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -56,11 +68,41 @@
                         <span class="fw-semibold">出力</span>
                     </div>
                     <div class="card-body">
-                        ・整数ビットマスク
-                        ・バイナリビットマスク
-                        ・オフセット
-                        ・Lua 判定式（可読性重視）
-                        ・Lua 判定式（サイズ重視）
+                        <div class="mb-3">
+                            <label for="constDec" class="form-label fw-semibold">整数ビットマスク</label>
+                            <div class="input-group">
+                                <input id="constDec" name="constDec" type="text" class="form-control" value="-" readonly>
+                                <button id="constDecCopyButton" type="button" class="btn btn-outline-secondary" data-copy="constDec">コピー</button>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="constBin" class="form-label fw-semibold">バイナリビットマスク</label>
+                            <div class="input-group">
+                                <input id="constBin" name="constBin" type="text" class="form-control" value="-" readonly>
+                                <button id="constBinCopyButton" type="button" class="btn btn-outline-secondary" data-copy="constBin">コピー</button>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="offset" class="form-label fw-semibold">オフセット</label>
+                            <div class="input-group">
+                                <input id="offset" name="offset" type="text" class="form-control" value="-" readonly>
+                                <button id="offsetCopyButton" type="button" class="btn btn-outline-secondary" data-copy="offset">コピー</button>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="luaReadable" class="form-label fw-semibold">Lua 判定式（可読性重視）</label>
+                            <div class="input-group">
+                                <input id="luaReadable" name="luaReadable" type="text" class="form-control" value="-" readonly>
+                                <button id="luaReadableCopyButton" type="button" class="btn btn-outline-secondary" data-copy="luaReadable">コピー</button>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="luaCompact" class="form-label fw-semibold">Lua 判定式（サイズ重視）</label>
+                            <div class="input-group">
+                                <input id="luaCompact" name="luaCompact" type="text" class="form-control" value="-" readonly>
+                                <button id="luaCompactCopyButton" type="button" class="btn btn-outline-secondary" data-copy="luaCompact">コピー</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
