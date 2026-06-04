@@ -40,9 +40,37 @@
         <div class="row g-4">
             <div class="col-lg-6">
                 <div class="card shadow-sm">
-                    <div class="card-header bg-light fw-semibold">ヘッダー</div>
+                    <div class="card-header bg-light d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <span class="fw-semibold">入力</span>
+                    </div>
                     <div class="card-body">
-                        <textarea id="input" class="form-control mono" rows="20" placeholder="コンテンツ"></textarea>
+                        ・整数の集合（カンマ/空白/改行区切り）
+                        ・範囲指定
+                        ・ボタン
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-light d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <span class="fw-semibold">出力</span>
+                    </div>
+                    <div class="card-body">
+                        ・整数ビットマスク
+                        ・バイナリビットマスク
+                        ・オフセット
+                        ・Lua 判定式（可読性重視）
+                        ・Lua 判定式（サイズ重視）
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-light fw-semibold">補足</div>
+                    <div class="card-body">
+                        <div class="form-text mt-2">
+                            補足説明
+                        </div>
                     </div>
                 </div>
             </div>
